@@ -55,7 +55,10 @@ def queryjsonfile(file_name, **kwargs):
                     if isinstance(objec[k], list):
                         if len([1 for ele in objec[k] if ele.find(v) != -1]) > 0:
                             ische = ische + 1
-                    if isinstance(objec[k], str) and objec[k].find(v) != -1:
+                    if k == 'rate':
+                        if float(objec[k]) > float(v):
+                            ische = ische + 1
+                    elif isinstance(objec[k], str) and objec[k].find(v) != -1:
                         ische = ische + 1
                 if ische == len(kwargs):
                     ische = 0
@@ -73,10 +76,10 @@ if __name__ == '__main__':
     query = {
         'name': '',
         'year': '',
-        'country': '日本',
-        'category': '伦理',
-        'rate': '6',
+        'country': '',
+        'category': '悬疑',
+        'rate': '9',
         'actor': ''
         }
-    for mm in queryjsonfile('/Users/pengtao/work/tmp/movie.json', **query):
+    for mm in queryjsonfile('/Users/pengtao/work/tmp/teleplay.json', **query):
         print(mm)
