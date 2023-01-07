@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>My Webpage</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma-rtl.min.css">
+</head>
+<body>
+{% set count = namespace(value=0) %}
+{% for item in rows %}
+  {% if count.value % 5 == 0 %}
+  <div class="columns">
+  {% endif %}
+    {% with %}
+    {% set count.value = count.value + 1 %}
+    <div class="column">
+      <div class="card">
+        <div class="card-image">
+            <img src="{{item.image}}">
+        </div>
+        <div class="card-content">
+          <div class="media">
+            <div class="media-content">
+            <a href="{{item.link}}" target="_blank">
+              <p class="title is-4">{{item.name}}</p>
+              <p class="subtitle is-6">{{item.country[0]}}-评分:{{item.rate}}</p>
+              </a>
+            </div>
+          </div>
+
+          <div class="content">
+            {{item.summary}}
+            <br>
+            <time>{{item.year}}</time>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endwith %}
+    {% if count.value % 5 == 0 %}
+    </div>
+    {% endif %}
+{% endfor %}
+</body>
+</html>

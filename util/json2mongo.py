@@ -4,6 +4,13 @@ import ijson
 
 import pymongo
 
+categories = [
+'全部','剧情','喜剧','动作','爱情','科幻','悬疑','惊悚','恐怖','犯罪','同性','音乐','歌舞','传记','历史','战争','西部','奇幻','冒险','灾难','武侠','伦理'
+]
+
+countries = [
+'全部','中国大陆','美国','香港','台湾','日本','韩国','英国','法国','德国','意大利','西班牙','印度','泰国','俄罗斯','伊朗','加拿大','澳大利亚','爱尔兰','瑞典','巴西'',丹麦'
+]
 
 class Json_Mongo():
     __mongo_client = None
@@ -67,19 +74,51 @@ def queryjsonfile(file_name, **kwargs):
                 print("数据读取完成")
                 break
 
+def queryjsonfilepage(file_name, frompage, topage, **kwargs):
+    with open(file_name, 'r', encoding='utf-8') as f:
+        obj = ijson.items(f, 'item')
+        cnt = 0
+        while True:
+            try:
+                objec = obj.__next__()
+                ische = 0
+                for k, v in kwargs.items():
+                    if v == '':
+                        ische = ische + 1
+                        continue
+                    if isinstance(objec[k], list):
+                        if len([1 for ele in objec[k] if ele.find(v) != -1]) > 0:
+                            ische = ische + 1
+                    if k == 'rate':
+                        if float(objec[k]) > float(v):
+                            ische = ische + 1
+                    elif isinstance(objec[k], str) and objec[k].find(v) != -1:
+                        ische = ische + 1
+                if ische == len(kwargs):
+                    ische = 0
+                    cnt = cnt + 1
+                    if cnt < int(frompage) or cnt > int(topage):
+                        # print(cnt)
+                        continue
+                    yield objec
+
+            except StopIteration as e:
+                print("数据读取完成")
+                break
+
 def condi():
     print()
 
 if __name__ == '__main__':
-    # jm = Json_Mongo('mongodb://mongoadmin:mongoadmin@localhost:47017/', 'nunu', 'movie')
-    # jm.json2mongo('/Users/pengtao/work/tmp/movie.json')
+    # jm = Json_Mongo('mongodb://mongoadmin:mongoadmin@localhost:47017/', 'nunu', 'teleplay')
+    # jm.json2mongo('/Users/pengtao/work/tmp/teleplay.json')
     query = {
         'name': '',
         'year': '',
         'country': '',
         'category': '悬疑',
-        'rate': '9',
+        'rate': '8',
         'actor': ''
         }
-    for mm in queryjsonfile('/Users/pengtao/work/tmp/teleplay.json', **query):
+    for mm in queryjsonfilepage('/Users/pengtao/work/tmp/teleplay.json', 36, 45, **query):
         print(mm)

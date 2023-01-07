@@ -4,3 +4,5 @@ pymongo==4.3.3
 Flask==2.2.2
 uwsgi==2.0.21
 waitress==2.1.2
+fastapi==0.88.0
+uvicorn==0.20.0
