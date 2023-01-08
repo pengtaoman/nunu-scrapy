@@ -5,11 +5,11 @@ import ijson
 import pymongo
 
 categories = [
-'全部','剧情','喜剧','动作','爱情','科幻','悬疑','惊悚','恐怖','犯罪','同性','音乐','歌舞','传记','历史','战争','西部','奇幻','冒险','灾难','武侠','伦理'
+'剧情','喜剧','动作','爱情','科幻','悬疑','惊悚','恐怖','犯罪','同性','音乐','歌舞','传记','历史','战争','西部','奇幻','冒险','灾难','武侠','伦理'
 ]
 
 countries = [
-'全部','中国大陆','美国','香港','台湾','日本','韩国','英国','法国','德国','意大利','西班牙','印度','泰国','俄罗斯','伊朗','加拿大','澳大利亚','爱尔兰','瑞典','巴西'',丹麦'
+'中国大陆','美国','香港','台湾','日本','韩国','英国','法国','德国','意大利','西班牙','印度','泰国','俄罗斯','伊朗','加拿大','澳大利亚','爱尔兰','瑞典','巴西','丹麦'
 ]
 
 class Json_Mongo():
@@ -48,6 +48,8 @@ class Json_Mongo():
 
 
 def queryjsonfile(file_name, **kwargs):
+    print('#'*40)
+    print('读文件：' + file_name)
     with open(file_name, 'r', encoding='utf-8') as f:
         obj = ijson.items(f, 'item')
         cnt = 0
@@ -100,6 +102,7 @@ def queryjsonfilepage(file_name, frompage, topage, **kwargs):
                     if cnt < int(frompage) or cnt > int(topage):
                         # print(cnt)
                         continue
+                    objec['total'] = cnt
                     yield objec
 
             except StopIteration as e:
