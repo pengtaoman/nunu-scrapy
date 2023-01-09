@@ -13,3 +13,4 @@ uvicorn fapi:app --reload
 #export LD_LIBRARY_PATH=/usr/local/anaconda/lib/
 
 
+docker run -d --name nunu1 -p 8088:8088 pengtaoman/nunu:v0.4

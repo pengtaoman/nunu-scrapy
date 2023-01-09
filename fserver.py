@@ -10,45 +10,6 @@ app = Flask(__name__)
 def hello_world():
     return "<p>Hello, World!</p>"
 
-@app.route("/movie")
-def query_movie():
-    query = {
-        'name': '',
-        'year': '2022',
-        'country': '中国大陆',
-        'director': '',
-        'category': '悬疑',
-        'rate': '7',
-        'actor': ''
-        }
-
-    queryjson = json2mongo.queryjsonfile('/Users/pengtao/work/tmp/teleplay.json', **query)
-    lis = []
-
-    for inx in range(50):
-        try:
-            row = next(queryjson)
-            lis.append(row)
-        except StopIteration as e:
-            break
-
-
-    # def generate():
-    #     yield '['
-    #     for row in queryjson:
-    #         try:
-    #             yield json.dumps(row) + ','
-    #         except StopIteration as e:
-    #             break
-    #     yield ']'
-    return app.response_class(json.dumps(lis), mimetype='application/json')
-    # return app.response_class(generate(), mimetype='application/json')
-
-
-@app.route('/movies')
-def hello(name=None):
-    return render_template('movie.html', name=name)
-
 @app.route('/querymovies', methods=['POST', 'GET'])
 def querymovies():
     name = request.args.get('name') if request.args.get('name') != None else ''
@@ -68,8 +29,15 @@ def querymovies():
         'actor': actor
         }
     queryreq = query.copy()
+
+    searchkey = request.form.get('searchkey')
+    if searchkey == None:
+        searchkey = request.args.get('searchkey') if request.args.get('searchkey') != None else ''
     queryreq['page'] = page
-    queryjson = json2mongo.queryjsonfilepage('/Users/pengtao/work/tmp/movie.json',(page - 1) * 40 + 1, page * 40, **query)
+    queryreq['searchkey'] = searchkey
+    queryjson = json2mongo.queryjsonfilepage('./json/movie.json', (page - 1) * 40 + 1, page * 40,
+                                             searchkey, **query)
+
     lis = []
 
     for inx in range(40):
@@ -88,12 +56,13 @@ def querymovies():
         queryreq['nopage'] = 0
     slist = sorted(lis, key=lambda d: d['rate'], reverse=True)
     hrf = {}
-    hrf['catehrf'] = '?name='+name+'&&'+'year='+year+'&&'+'country='+country+'&&'+'rate='+rate
-    hrf['counhrf'] = '?name='+name+'&&'+'year='+year+'&&'+'category='+category+'&&'+'rate='+rate
-    hrf['year'] = '?name=' + name + '&&' +'category=' + category+'&&'+'country='+country+'&&'+'rate='+rate
-    hrf['rate'] = '?name=' + name + '&&' + 'category=' + category + '&&' + 'country=' + country
-    hrf['actor'] = '?name=' + name + '&&' + 'category=' + category + '&&' + 'country=' + country+'&&'+'rate='+rate
-    hrf['page'] = '?name=' + name +'&&'+'year='+year+ '&&' + 'category=' + category + '&&' + 'country=' + country + '&&' + 'rate=' + rate
+    hrf['catehrf'] = '?name='+name+'&&'+'year='+year+'&&'+'country='+country+'&&'+'rate='+rate+'&&'+'searchkey='+searchkey
+    hrf['counhrf'] = '?name='+name+'&&'+'year='+year+'&&'+'category='+category+'&&'+'rate='+rate+'&&'+'searchkey='+searchkey
+    hrf['year'] = '?name=' + name + '&&' +'category=' + category+'&&'+'country='+country+'&&'+'rate='+rate+'&&'+'searchkey='+searchkey
+    hrf['rate'] = '?name=' + name + '&&' + 'category=' + category + '&&' + 'country=' + country+'&&'+'searchkey='+searchkey
+    hrf['actor'] = '?name=' + name + '&&' + 'category=' + category + '&&' + 'country=' + country+'&&'+'rate='+rate+'&&'+'searchkey='+searchkey
+    hrf['page'] = '?name=' + name +'&&'+'year='+year+ '&&' + 'category=' + category + '&&' + 'country=' + country + '&&' + 'rate=' + rate+'&&'+'searchkey='+searchkey
+    hrf['searchkey'] = '?name=' + name + '&&' + 'year=' + year + '&&' + 'category=' + category + '&&' + 'country=' + country + '&&' + 'rate=' + rate
     return render_template('movie.html', rows=slist, cas=json2mongo.categories, couns=json2mongo.countries, que=queryreq, hrf=hrf)
 
 @app.route('/queryteleplays', methods=['POST', 'GET'])
@@ -116,9 +85,13 @@ def queryteleplays():
         'actor': actor
     }
     queryreq = query.copy()
+    searchkey = request.form.get('searchkey')
+    if searchkey == None:
+        searchkey = request.args.get('searchkey') if request.args.get('searchkey') != None else ''
     queryreq['page'] = page
-    queryjson = json2mongo.queryjsonfilepage('/Users/pengtao/work/tmp/teleplay.json', (page - 1) * 40 + 1, page * 40,
-                                             **query)
+    queryreq['searchkey'] = searchkey
+    queryjson = json2mongo.queryjsonfilepage('json/teleplay.json', (page - 1) * 40 + 1, page * 40,
+                                             searchkey, **query)
     lis = []
 
     for inx in range(40):
@@ -137,12 +110,13 @@ def queryteleplays():
         queryreq['nopage'] = 0
     slist = sorted(lis, key=lambda d: d['rate'], reverse=True)
     hrf = {}
-    hrf['catehrf'] = '?name=' + name + '&&' + 'year=' + year + '&&' + 'country=' + country + '&&' + 'rate=' + rate
-    hrf['counhrf'] = '?name=' + name + '&&' + 'year=' + year + '&&' + 'category=' + category + '&&' + 'rate=' + rate
-    hrf['year'] = '?name=' + name + '&&' + 'category=' + category + '&&' + 'country=' + country + '&&' + 'rate=' + rate
-    hrf['rate'] = '?name=' + name + '&&' + 'category=' + category + '&&' + 'country=' + country
-    hrf['actor'] = '?name=' + name + '&&' + 'category=' + category + '&&' + 'country=' + country + '&&' + 'rate=' + rate
-    hrf['page'] = '?name=' + name + '&&' + 'year=' + year + '&&' + 'category=' + category + '&&' + 'country=' + country + '&&' + 'rate=' + rate
+    hrf['catehrf'] = '?name='+name+'&&'+'year='+year+'&&'+'country='+country+'&&'+'rate='+rate+'&&'+'searchkey='+searchkey
+    hrf['counhrf'] = '?name='+name+'&&'+'year='+year+'&&'+'category='+category+'&&'+'rate='+rate+'&&'+'searchkey='+searchkey
+    hrf['year'] = '?name=' + name + '&&' +'category=' + category+'&&'+'country='+country+'&&'+'rate='+rate+'&&'+'searchkey='+searchkey
+    hrf['rate'] = '?name=' + name + '&&' + 'category=' + category + '&&' + 'country=' + country+'&&'+'searchkey='+searchkey
+    hrf['actor'] = '?name=' + name + '&&' + 'category=' + category + '&&' + 'country=' + country+'&&'+'rate='+rate+'&&'+'searchkey='+searchkey
+    hrf['page'] = '?name=' + name +'&&'+'year='+year+ '&&' + 'category=' + category + '&&' + 'country=' + country + '&&' + 'rate=' + rate+'&&'+'searchkey='+searchkey
+    hrf['searchkey'] = '?name=' + name + '&&' + 'year=' + year + '&&' + 'category=' + category + '&&' + 'country=' + country + '&&' + 'rate=' + rate
     return render_template('teleplay.html', rows=slist, cas=json2mongo.categories, couns=json2mongo.countries,
                            que=queryreq, hrf=hrf)
 
