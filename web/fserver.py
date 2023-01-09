@@ -75,7 +75,7 @@ def querymovies():
     for inx in range(40):
         try:
             row = next(queryjson)
-            print(row['total'])
+            # print(row['total'])
             img = str(row['link']).replace('dianying', 'img')
             img = img.replace('html', 'jpg')
             row['image'] = img
@@ -124,7 +124,7 @@ def queryteleplays():
     for inx in range(40):
         try:
             row = next(queryjson)
-            print(row['total'])
+            # print(row['total'])
             img = str(row['link']).replace('dianshiju', 'img')
             img = img.replace('html', 'jpg')
             row['image'] = img
