@@ -1,4 +1,6 @@
 import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
 
 # df = pd.read_json("../pageon.json")
 df = pd.read_json("../json/movie.json")
@@ -22,3 +24,7 @@ label_cols = ["age", "qualified"]
 dataf = pd.DataFrame(data, label_rows, label_cols)
 print('#'*20)
 print(dataf.loc["Mary", "age"])
+
+ts = pd.Series(np.random.randn(1000), index=pd.date_range('1/1/2000', periods=1000))
+ts = ts.cumsum()
+ts.plot()
