@@ -30,7 +30,14 @@ class PanFlask():
     def load_movie_data(self):
         PanFlask.movie_data = pd.read_json("json/movie.json")
         PanFlask.teleplay_data = pd.read_json("json/teleplay.json")
-        # PanFlask.movie_data = pd.read_json("json/pageone.json")
+        # PanFlask.movie_data = pd.read_json("../json/movie.json")
+        PanFlask.movie_data.loc[:, "year"] = PanFlask.movie_data["year"].str.replace("(", "").astype('str')
+        PanFlask.movie_data.loc[:, "year"] = PanFlask.movie_data["year"].str.replace(")", "").astype('int32')
+        (PanFlask.movie_data.rate).apply(lambda x: float(x))
+        
+        PanFlask.teleplay_data.loc[:, "year"] = PanFlask.teleplay_data["year"].str.replace("(", "").astype('str')
+        PanFlask.teleplay_data.loc[:, "year"] = PanFlask.teleplay_data["year"].str.replace(")", "").astype('int32')
+        (PanFlask.teleplay_data.rate).apply(lambda x: float(x))
 
     def getdata(self):
         return PanFlask.movie_data.head().to_string()
@@ -38,84 +45,91 @@ class PanFlask():
     def search_movie(self, page, **que):
 
         md = PanFlask.movie_data
-        print('M'*100)
-        print(len(md.index))
-        print(que['name'])
-        print('M' * 100)
+        # print('M'*100)
+        # print(len(md.index))
+        # print(que['name'])
+        # print('M' * 100)
 
         if que['name'] != '':
             md = md[md.name.str.contains(que['name'])]
         if que['year'] != '':
-            md = md[md.name.str.contains(que['year'])]
+            md = md[md.year == int(que['year'])]
         if que['category'] != '':
             md = md[md.category.str.join('-').str.contains(que['category'])]
         if que['rate'] != '':
-            md = md[md.name.str.contains(que['rate'])]
+            # md = md[(md.rate >= int('6')) & (md.rate < int('6') + 1)]
+            md = md[(md.rate >= int(que['rate'])) & (md.rate < int(que['rate']) + 9)]
         if que['actor'] != '':
             md = md[md.actor.str.join('-').str.contains(que['actor'])]
         if que['country'] != '':
             md = md[md.country.str.join('-').str.contains(que['country'])]
 
         md = md[(int(page) - 1) * int(40): (int(page) * int(40))]
-        print('V'*100)
-        print(len(md.index))
-        print('V' * 100)
-        # print(md)
-        print('D' * 100)
+        # print('V'*100)
+        # print(len(md.index))
+        # print('V' * 100)
+        # # print(md)
+        # print('D' * 100)
+        # # return md
         return md.iterrows()
 
 
     def search_teleplay(self, page, **que):
 
         md = PanFlask.teleplay_data
-        print('M'*100)
-        print(len(md.index))
-        print(que['name'])
-        print('M' * 100)
+        # print('M'*100)
+        # print(len(md.index))
+        # print(que['name'])
+        # print('M' * 100)
 
         if que['name'] != '':
             md = md[md.name.str.contains(que['name'])]
         if que['year'] != '':
-            md = md[md.name.str.contains(que['year'])]
+            md = md[md.year == int(que['year'])]
         if que['category'] != '':
             md = md[md.category.str.join('-').str.contains(que['category'])]
         if que['rate'] != '':
-            md = md[md.name.str.contains(que['rate'])]
+            md = md[(md.rate >= int(que['rate'])) & (md.rate < int(que['rate']) + 9)]
         if que['actor'] != '':
             md = md[md.actor.str.join('-').str.contains(que['actor'])]
         if que['country'] != '':
             md = md[md.country.str.join('-').str.contains(que['country'])]
 
         md = md[(int(page) - 1) * int(40): (int(page) * int(40))]
-        print('V'*100)
-        print(len(md.index))
-        print('V' * 100)
+        # print('V'*100)
+        # print(len(md.index))
+        # print('V' * 100)
         # print(md)
-        print('D' * 100)
+        # print('D' * 100)
+        # return md
         return md.iterrows()
 
 if __name__ == '__main__':
     pp = PanFlask()
     pp.load_movie_data()
+    
+    # df = pp.movie_data
 
     query = {
         'name': '',
-        'year': '',
+        'year': '2022',
         'country': '',
         'director': '',
         'category': '',
-        'rate': '',
+        'rate': '5',
         'actor': ''
         }
     itr = pp.search_movie(1, **query)
-    tu = next(itr)
+    # tu = next(itr)
+    
+    
     # print(type(tu[1]))
     # print(type(tu[1].to_json()))
     # print(type(json(tu[1].to_json())))
     # print(tu[1].to_json())
-    js = tu[1].to_json()
-    print(tu[1].to_json())
-    print(tu[1]['name'])
+    # js = tu[1].to_json()
+    # print(tu[1].to_json())
+    # print(tu[1]['name'])
 
-    kkkk = json.loads(tu[1].to_json())
-    print(type(kkkk))
+    # kkkk = json.loads(tu[1].to_json())
+    # print(type(kkkk))

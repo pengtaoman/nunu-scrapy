@@ -1,5 +1,4 @@
 import keyword
-
 import ijson
 
 categories = [
