@@ -10,7 +10,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-
+# In[2]:
 ratings_data = pd.read_csv("/Volumes/860EVO/work/json/ml-latest-small/ratings.csv")
 ratings_data.head()
 
@@ -23,7 +23,7 @@ movie_data = pd.merge(ratings_data, movie_names, on='movieId')
 # ms = movie_data.groupby('title')['rating'].mean().head()
 ms = movie_data.groupby('title')['rating'].mean()
 ms = ms.sort_values(ascending=False).head()
-
+# In[2]:
 '''
 这些电影现已根据评分的降序排序。然而有一个问题是，如果只有一个用户对电影做了评价且分数为五星，这部电影就会排到列表的顶部。
 因此，上述统计数据可能具有误导性。通常来讲，一部真正的好电影会有大批用户给更高的评分。

@@ -14,3 +14,5 @@ uvicorn fapi:app --reload
 
 
 docker run -d --name nunu1 -p 8088:8088 pengtaoman/nunu:v0.4
+
+sudo jupyter-lab --allow-root

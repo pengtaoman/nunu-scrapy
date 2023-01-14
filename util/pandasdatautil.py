@@ -7,7 +7,7 @@ df = pd.read_json("../json/movie.json")
 df.dtypes
 # df.set_index('', inplace=True)
 print(type(df))
-print(df.size)
+print(df.dfsize)
 print(df.info(verbose=False, memory_usage='deep'))
 cols = df.columns
 inx = df.index
