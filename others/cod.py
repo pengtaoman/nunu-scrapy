@@ -110,41 +110,57 @@ coun_df = pd.DataFrame(countries)
 # In[1]:
 
     
-df_category_merge = pd.merge(df_new, cate_df, how='left', on=['category'])
+df_merged = pd.merge(df_new, cate_df, how='left', on=['category'])
 
-df_category_merge = pd.merge(df_category_merge, coun_df, how='left', on=['country'])
+df_merged = pd.merge(df_merged, coun_df, how='left', on=['country'])
 
-df_category_merge['category_id'] = df_category_merge['category_id'].fillna(-1)
-df_category_merge['country_id'] = df_category_merge['country_id'].fillna(-1)
+df_merged['category_id'] = df_merged['category_id'].fillna(-1)
+df_merged['country_id'] = df_merged['country_id'].fillna(-1)
 # In[1]:
 
-# df_category_merge = df_category_merge.drop(['category'], axis=1)
-# df_category_merge = df_category_merge.drop(['country'], axis=1)
+# df_merged = df_merged.drop(['category'], axis=1)
+# df_merged = df_merged.drop(['country'], axis=1)
 
 # In[1]:
 
-print(sys.getsizeof(df_category_merge))
+print(sys.getsizeof(df_merged))
 
 # In[1]:
-movie_be_compare = df_category_merge.iloc[8]
-# df_category_merge.drop(['relate'], axis=1)
+tmp_df = df_merged
+df_movie_category=tmp_df.drop(['year','rate','director','actor','summary','link','moviename','movie_id','category','country','country_id'], axis=1)
+df_movie_category['category_id'].astype(int)
+tmp_df = df_merged
+df_movie_rate=tmp_df.drop(['year','category_id','director','actor','summary','link','moviename','movie_id','category','country','country_id'], axis=1)
+df_movie_rate['rate'].astype(float)
+    
+# In[1]:
+movie_be_compare_category = df_movie_category.iloc[8]
 
-# df_category_merge['category_id']=df_category_merge['category_id'].apply(lambda x: x * 100)
-# df_category_merge['rate']=df_category_merge['rate'].apply(lambda x: int(x))
-# df_category_merge['rate'].astype(int)
-df_final = df_category_merge
-df_category_merge = df_category_merge.drop(['summary','director', 'actor','moviename','link', 'movie_id','year'], axis=1)
+movie_be_compare_rate = df_movie_rate.iloc[8]
+
+# df_merged.drop(['relate'], axis=1)
+
+# df_merged['category_id']=df_merged['category_id'].apply(lambda x: x * 100)
+# df_merged['rate']=df_merged['rate'].apply(lambda x: int(x))
+# df_merged['rate'].astype(int)
+df_final = df_merged
+# df_merged = df_merged.drop(['summary','director', 'actor','moviename','link', 'movie_id','year'], axis=1)
 #‘  pearson   ’, ‘   kendall   ’, ‘   spearman   ’
-similarity_movies = df_category_merge.corrwith(movie_be_compare, axis=1,
-                                          method='kendall', numeric_only=True)
-df_category_merge['relate']=similarity_movies
+similarity_category = df_movie_category.corrwith(movie_be_compare_category, axis=1, method='kendall', numeric_only=True)
+
+movie_be_compare_rate['category_id']=movie_be_compare_category['category_id']
+df_movie_rate['category_id']=df_movie_category['category_id']
+similarity_rate = df_movie_rate.corrwith(movie_be_compare_rate, axis=1, method='kendall', numeric_only=True)
+
+df_movie_category['relate_rate']=similarity_rate
+
+# df_movie_rate['relate_rate']=similarity_rate
 
 
-
-# ddddddd = pd.concat([df_category_merge, similarity_movies])
+# ddddddd = pd.concat([df_merged, similarity_movies])
 # similarity_movies['0']
 
-# df_category_merge.corr('kendall')
+# df_merged.corr('kendall')
 
 
 
