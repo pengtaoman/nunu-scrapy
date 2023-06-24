@@ -55,15 +55,21 @@ class PanFlask():
         if que['year'] != '':
             md = md[md.year == int(que['year'])]
         if que['category'] != '':
-            md = md[md.category.str.join('-').str.contains(que['category'])]
+            md['isCatagory'] = md['category'].apply(lambda x: que['category'] in x)
+            md = md[md['isCatagory'] == True] 
+            # md = md[md.category.str.join('-').str.contains(que['category'])]
         if que['rate'] != '':
             # md = md[(md.rate >= int('6')) & (md.rate < int('6') + 1)]
-            md = md[(md.rate >= int(que['rate'])) & (md.rate < int(que['rate']) + 9)]
+            md = md[(md.rate >= int(que['rate'])) & (md.rate < int(que['rate']) + 1)]
         if que['actor'] != '':
-            md = md[md.actor.str.join('-').str.contains(que['actor'])]
+            md['isActor'] = md['actor'].apply(lambda x: que['actor'] in x)
+            md = md[md['isActor'] == True] 
+            # md = md[md.actor.str.join('-').str.contains(que['actor'])]
         if que['country'] != '':
-            md = md[md.country.str.join('-').str.contains(que['country'])]
-
+            md['isCountry'] = md['country'].apply(lambda x: que['country'] in x)
+            md = md[md['isCountry'] == True] 
+            # md = md[md.country.str.join('-').str.contains(que['country'])]
+        md = md.sort_values('rate', ascending=False)
         md = md[(int(page) - 1) * int(40): (int(page) * int(40))]
         # print('V'*100)
         # print(len(md.index))
@@ -87,14 +93,20 @@ class PanFlask():
         if que['year'] != '':
             md = md[md.year == int(que['year'])]
         if que['category'] != '':
-            md = md[md.category.str.join('-').str.contains(que['category'])]
+            md['isCatagory'] = md['category'].apply(lambda x: que['category'] in x)
+            md = md[md['isCatagory'] == True] 
+            # md = md[md.category.str.join('-').str.contains(que['category'])]
         if que['rate'] != '':
-            md = md[(md.rate >= int(que['rate'])) & (md.rate < int(que['rate']) + 9)]
+            md = md[(md.rate >= int(que['rate'])) & (md.rate < int(que['rate']) + 1)]
         if que['actor'] != '':
-            md = md[md.actor.str.join('-').str.contains(que['actor'])]
+            md['isActor'] = md['actor'].apply(lambda x: que['actor'] in x)
+            md = md[md['isActor'] == True] 
+            # md = md[md.actor.str.join('-').str.contains(que['actor'])]
         if que['country'] != '':
-            md = md[md.country.str.join('-').str.contains(que['country'])]
-
+            md['isCountry'] = md['country'].apply(lambda x: que['country'] in x)
+            md = md[md['isCountry'] == True] 
+            # md = md[md.country.str.join('-').str.contains(que['country'])]
+        md = md.sort_values('rate', ascending=False)
         md = md[(int(page) - 1) * int(40): (int(page) * int(40))]
         # print('V'*100)
         # print(len(md.index))

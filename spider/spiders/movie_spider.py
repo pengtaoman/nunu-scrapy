@@ -29,9 +29,9 @@ class QuotesSpider(scrapy.Spider):
             # if not response.css('div.product-excerpt'):
             # yield scrapy.Request(url=movie_item['link'], callback=self.parse_detail, cb_kwargs={"movie_item": movie_item})
             yield scrapy.Request(url=link, callback=self.parse_detail)
-        # next_page = response.css("li.next-page a::attr(href)").get()
-        # if next_page is not None:
-        #     yield response.follow(next_page, callback=self.parse)
+        next_page = response.css("li.next-page a::attr(href)").get()
+        if next_page is not None:
+            yield response.follow(next_page, callback=self.parse)
 
     def parse_detail(self, response):
         # movie_item = kwargs.get("movie_item")
